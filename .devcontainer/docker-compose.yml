@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  vtn:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: vtn-server
+    volumes:
+      - ../:/workspaces
+    command: sleep infinity
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    container_name: db
+    volumes:
+      - mysql-compose-volume:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/initdb.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql-compose-volume:
